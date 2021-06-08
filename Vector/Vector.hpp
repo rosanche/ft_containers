@@ -28,6 +28,8 @@ namespace ft {
 
 		private: 
 			T* arrays;
+			int v_size;
+			int v_capicity;
 
 		public:
 			explicit vector (const allocator_type& alloc = allocator_type()) {
@@ -49,8 +51,23 @@ namespace ft {
 			iterator begin() {
 				return (iterator(this->arrays));
 			}
-			const_iterator begin() const {
-				return (const_iterator(this->arrays))
+			reverse_iterator rbegin() {
+				return (reverse_iterator(this->arrays))
+			}
+
+			iterator end() {
+				return (iterator(this->arrays[v_size]));
+			}
+			reverse_iterator rend() {
+				return (reverse_iterator(this->arrays[v_size]))
+			}
+
+			// CAPACITY
+			int size() {
+				return (v_size);
+			}
+			void resize(size_type n, value_type val = value_type()) {
+				return ();
 			}
 	};
 };
