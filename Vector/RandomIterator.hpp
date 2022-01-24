@@ -42,7 +42,7 @@ RandomIterator<T>::RandomIterator() {
 
 template <typename T>
 RandomIterator<T>::RandomIterator(T *ptr) {
-	this->ptr = ptr
+	this->ptr = ptr;
 }
 
 template <typename T>
