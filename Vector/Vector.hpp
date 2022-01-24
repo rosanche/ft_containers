@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include "RandomIterator.hpp"
+#include <iostream>
+#include <vector>
 
 namespace ft {
 	template <typename T>
@@ -27,24 +29,81 @@ namespace ft {
 			typedef RandomIterator<const_iterator> const_reverse_iterator;
 
 		private: 
-			T* arrays;
+			value_type* arrays;
+			allocator_type allocator;
 			int v_size;
-			int v_capicity;
+			int v_capacity;
 
 		public:
-			explicit vector (const allocator_type& alloc = allocator_type()) {
+			explicit vector (const allocator_type& alloc = allocator_type()): 
+				allocator(alloc),
+				arrays(NULL),
+				v_size(0),
+				v_capacity(0)  
+			{
 			}
 
-			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) {
-				// this->
+			explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()): 
+				allocator(alloc),
+				arrays(NULL),
+				v_size(0),
+				v_capacity(0)  
+			{
+				assign(n. val);
 			}
+
+
 			template <class InputIterator>
-					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type());	
-			vector (const vector& x);
-			// vector(void);
-			// ~vector();
-			// vector(T *ptr);
-			// vector &operator=(const vector &ptr);
+					vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()): 
+				allocator(alloc),
+				arrays(NULL),
+				v_size(0),
+				v_capacity(0)  
+			{
+				assign(first, last)
+			}
+
+			vector (const vector &ptr): 
+				allocator(ptr.allocator),
+				arrays(NULL),
+				v_size(0),
+				v_capacity(0)  
+			{
+				assign(x.begin, x.last)
+			}
+
+			vector(void): 
+				allocator(NULL),
+				arrays(NULL),
+				v_size(0),
+				v_capacity(0)  
+			{
+			}
+
+			~vector() 
+			{
+				clear();
+				allocator.deallocate(arrays, v_size)
+			}
+
+			vector &operator=(const vector &ptr)
+			{
+				if (this != &ptr)
+				{
+					clear();
+					allocator = ptr.allocator;
+					array = NULL;
+					v_size = 0;
+					v_capacity = 0;
+					
+					if (ptr.v_capacity != 0)
+						reserve(v_capacity);
+				
+					if (ptr.size() != 0)
+						assign(ptr.begin(), ptr.end());
+				
+				}
+				return(*this);
 
 			// ITERATORS
 
