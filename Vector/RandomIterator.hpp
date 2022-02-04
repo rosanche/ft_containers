@@ -7,46 +7,49 @@ template <typename T>
 
 class RandomIterator
 {
-	public:
-		// member types
-		typedef T value_type;
-		typedef std::ptrdiff_t various_type;
-		typedef T *pointer;
+public:
+	// member types
+	typedef T value_type;
+	typedef std::ptrdiff_t various_type;
+	typedef T *pointer;
 
-		RandomIterator(void);
-		~RandomIterator();
-		RandomIterator(T *ptr);
-		RandomIterator &operator=(const RandomIterator &ptr);
+	RandomIterator(void);
+	~RandomIterator();
+	RandomIterator(T *ptr);
+	RandomIterator &operator=(const RandomIterator &ptr);
 
-		RandomIterator &operator++();
-		RandomIterator operator++(int nothing);
-		RandomIterator &operator--();
-		RandomIterator operator--(int nothing) const;
+	RandomIterator &operator++();
+	RandomIterator operator++(int nothing);
+	RandomIterator &operator--();
+	RandomIterator operator--(int nothing) const;
 
-		RandomIterator &operator+=(various_type add);
-		RandomIterator operator+(various_type add) const;
-		RandomIterator &operator-=(various_type sou);
-		RandomIterator operator-(various_type sou) const;
+	RandomIterator &operator+=(various_type add);
+	RandomIterator operator+(various_type add) const;
+	RandomIterator &operator-=(various_type sou);
+	RandomIterator operator-(various_type sou) const;
 
-		bool operator==(const RandomIterator &ptr) const;
-		bool operator!=(const RandomIterator &ptr) const;
+	bool operator==(const RandomIterator &ptr) const;
+	bool operator!=(const RandomIterator &ptr) const;
 
-		pointer ptr;
-
+private:
+	T *ptr;
 };
 
 template <typename T>
-RandomIterator<T>::RandomIterator() {
+RandomIterator<T>::RandomIterator()
+{
 	this->ptr = NULL;
 }
 
 template <typename T>
-RandomIterator<T>::RandomIterator(T *ptr) {
+RandomIterator<T>::RandomIterator(T *ptr)
+{
 	this->ptr = ptr;
 }
 
 template <typename T>
-RandomIterator<T>::~RandomIterator() {
+RandomIterator<T>::~RandomIterator()
+{
 }
 
 template <typename T>
@@ -128,15 +131,15 @@ RandomIterator<T> RandomIterator<T>::operator-(various_type sou) const
 };
 
 template <typename T>
-bool RandomIterator<T>::operator==(const RandomIterator &ptr) const
+bool RandomIterator<T>::operator==(const RandomIterator &x) const
 {
-	return this->ptr == ptr;
+	return this->ptr == x;
 };
 
 template <typename T>
-bool RandomIterator<T>::operator!=(const RandomIterator &ptr) const
+bool RandomIterator<T>::operator!=(const RandomIterator &x) const
 {
-	return this->ptr != ptr;
+	return this->ptr != x;
 };
 
 #endif
