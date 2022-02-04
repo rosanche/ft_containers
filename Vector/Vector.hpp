@@ -8,8 +8,6 @@
 
 namespace ft
 {
-	// template <typename T>
-
 	template <class T, class Alloc = std::allocator<T> >
 	class vector
 	{
@@ -24,10 +22,11 @@ namespace ft
 		typedef std::ptrdiff_t difference_type;
 		typedef size_t size_type;
 
-		typedef RandomIterator<T> iterator;
-		typedef RandomIterator<const T> const_iterator;
-		typedef RandomIterator<iterator> reverse_iterator;
-		typedef RandomIterator<const_iterator> const_reverse_iterator;
+		typedef pointer iterator;
+		typedef const_pointer const_iterator;
+		typedef ft::RandomIterator<iterator> reverse_iterator;
+		typedef ft::RandomIterator<const_iterator> const_reverse_iterator;
+
 
 	private:
 		value_type *arrays;
@@ -87,7 +86,7 @@ namespace ft
 			if (arrays)
 			{
 				for (iterator i = begin(); i != end(); i++)
-					allocator.destroy(&(*i));
+					allocator.destroy(&i);
 
 				allocator.deallocate(arrays, v_size);
 			}
