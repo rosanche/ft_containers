@@ -2,7 +2,15 @@
 
 int main()
 {
-    ft::vector<int> first;
+    // initialization
+    ft::vector<int> one;
+    ft::vector<int> two(10, 90);
+    ft::vector<int> three(two.begin(), two.end());
+    ft::vector<int> tour(two);
+
+    for (ft::vector<int>::iterator x = two.begin(); x != two.end(); ++x)
+        std::cout << "x value :" << x << std::endl;
+    
     // ft::vector<int> myvector;
     // for (int i=1; i<=5; i++) myvector.push_back(i);
 

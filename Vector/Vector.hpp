@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "RandomIterator.hpp"
-#include <iostream>
+#include <memory>
 #include <vector>
 
 namespace ft
@@ -78,7 +78,7 @@ namespace ft
 									v_size(0),
 									v_capacity(0)
 		{
-			assign(ptr.begin, ptr.last);
+			assign(ptr.begin(), ptr.end());
 		}
 
 		~vector()
@@ -86,7 +86,7 @@ namespace ft
 			if (arrays)
 			{
 				for (iterator i = begin(); i != end(); i++)
-					allocator.destroy(&i);
+					allocator.destroy(&(*i));
 
 				allocator.deallocate(arrays, v_size);
 			}
@@ -116,6 +116,11 @@ namespace ft
 		{
 			return (iterator(arrays));
 		}
+		const_iterator begin() const
+		{
+			return (const_iterator(arrays));
+		}
+
 		reverse_iterator rbegin()
 		{
 			return (reverse_iterator(arrays));
@@ -125,6 +130,11 @@ namespace ft
 		{
 			return (iterator(&arrays[v_size]));
 		}
+		const_iterator end() const
+		{
+			return (const_iterator(&arrays[v_size]));
+		}
+
 		reverse_iterator rend()
 		{
 			return (reverse_iterator(&arrays[v_size]));
@@ -159,7 +169,7 @@ namespace ft
 				value_type *new_array;
 				new_array = allocator.allocate(n);
 				for (size_t i = 0; i < v_size; i++)
-					allocator.construct(new_array[i], arrays[i]);
+					allocator.construct(&new_array[i], arrays[i]);
 				allocator.deallocate(arrays, v_capacity);
 				allocator.destroy(arrays);
 				arrays = new_array;
@@ -211,7 +221,7 @@ namespace ft
 		{
 			if (v_size + 1 > v_capacity)
 				reserve(v_size + 1);
-			allocator.constuct(&arrays[v_size + 1], val);
+			allocator.construct(&arrays[v_size + 1], val);
 			v_size++;
 		}
 
@@ -261,7 +271,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void insert(iterator position, InputIterator first, InputIterator last)
+		void insert(iterator position, InputIterator first, InputIterator last, 
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0)
 		{
 			vector tmp;
 			iterator it = begin();
@@ -332,7 +343,7 @@ namespace ft
 		template <typename F>
 		void swap(F &x, F &y)
 		{
-			F &tmp = NULL;
+			F tmp;
 			tmp = x;
 			x = y;
 			y = tmp;
