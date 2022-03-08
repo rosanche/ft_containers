@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "RandomIterator.hpp"
+#include "tools.hpp"
 #include <memory>
 #include <vector>
 
@@ -272,7 +273,7 @@ namespace ft
 
 		template <class InputIterator>
 		void insert(iterator position, InputIterator first, InputIterator last, 
-		typename ft::enable_if<!ft::is_integral<InputIterator>::value >::type* = 0)
+		typename ft::enable<!ft::integral<InputIterator>::value >::type* = 0)
 		{
 			vector tmp;
 			iterator it = begin();
