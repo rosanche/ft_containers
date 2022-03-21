@@ -2,6 +2,7 @@
 #define STACK_HPP
 
 #include "../Vector/Vector.hpp"
+#include <deque>
 
 namespace ft
 {
@@ -13,51 +14,14 @@ namespace ft
         typedef T value_type;
         typedef size_t size_type;
 
-    public:
-        explicit Stack(
+        explicit stack(
             const container_type &container = container_type())
             : container_type(container)
         {
         }
 
-        ~Stack()
+        ~stack()
         {
-        }
-
-        template <class T, class Container>
-        bool operator==(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type == b.container_type);
-        }
-
-        template <class T, class Container>
-        bool operator!=(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type != b.container_type);
-        }
-
-        template <class T, class Container>
-        bool operator<(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type < b.container_type);
-        }
-
-        template <class T, class Container>
-        bool operator<=(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type <= b.container_type);
-        }
-
-        template <class T, class Container>
-        bool operator>(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type > b.container_type);
-        }
-
-        template <class T, class Container>
-        bool operator>=(const Stack<T, Container> &a, const Stack<T, Container> &b)
-        {
-            return (a.container_type >= b.container_type);
         }
 
         bool empty() const
@@ -89,7 +53,43 @@ namespace ft
         {
             container_type.pop_back();
         }
-    }
-};
+
+        template <class T, class Container>
+        bool operator==(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type == b.container_type);
+        }
+
+        template <class T, class Container>
+        bool operator!=(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type != b.container_type);
+        }
+
+        template <class T, class Container>
+        bool operator<(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type < b.container_type);
+        }
+
+        template <class T, class Container>
+        bool operator<=(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type <= b.container_type);
+        }
+
+        template <class T, class Container>
+        bool operator>(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type > b.container_type);
+        }
+
+        template <class T, class Container>
+        bool operator>=(const stack<T, Container> &a, const stack<T, Container> &b)
+        {
+            return (a.container_type >= b.container_type);
+        }
+    };
+}
 
 #endif

@@ -28,7 +28,6 @@ namespace ft
 		typedef ft::RandomIterator<iterator> reverse_iterator;
 		typedef ft::RandomIterator<const_iterator> const_reverse_iterator;
 
-
 	private:
 		value_type *arrays;
 		allocator_type allocator;
@@ -36,18 +35,6 @@ namespace ft
 		int v_capacity;
 
 	public:
-		// explicit vector(const allocator_type &alloc = allocator_type()) : allocator(alloc),
-		// 																  arrays(NULL),
-		// 																  v_size(0),
-		// 																  v_capacity(0)
-		// {
-		// }
-		// vector(void) : allocator(NULL),
-		// 			   arrays(NULL),
-		// 			   v_size(0),
-		// 			   v_capacity(0)
-		// {
-		// }
 		//  CONSTRUCTOR
 
 		explicit vector(const allocator_type &alloc = allocator_type()) : allocator(alloc),
@@ -149,15 +136,14 @@ namespace ft
 
 		void resize(size_type n, value_type val = value_type())
 		{
-			if (n > size())
+			while (n > v_size)
 			{
-				for (int i = n; n > size(); i--)
-					pop_back();
+				push_back(val);
 			}
-			else
+			if (n < v_size)
 			{
-				for (int i = n; n < size(); i++)
-					push_back(val);
+				while (v_size != n)
+					pop_back();
 			}
 		}
 
@@ -195,7 +181,7 @@ namespace ft
 
 		bool empty() const
 		{
-			return (!!v_size);
+			return (!v_size);
 		}
 
 		size_type capacity() const
@@ -222,7 +208,7 @@ namespace ft
 		{
 			if (v_size + 1 > v_capacity)
 				reserve(v_size + 1);
-			allocator.construct(&arrays[v_size + 1], val);
+			allocator.construct(&arrays[v_size], val);
 			v_size++;
 		}
 
@@ -272,8 +258,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-		void insert(iterator position, InputIterator first, InputIterator last, 
-		typename ft::enable<!ft::integral<InputIterator>::value >::type* = 0)
+		void insert(iterator position, InputIterator first, InputIterator last,
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0)
 		{
 			vector tmp;
 			iterator it = begin();
@@ -338,6 +324,54 @@ namespace ft
 				allocator.destroy(&arrays[i]);
 			}
 			v_size = 0;
+		}
+
+		// ELEMENT ACCESS
+
+		reference operator[](size_type n)
+		{
+			return (arrays[n]);
+		}
+
+		const_reference operator[](size_type n) const
+		{
+			return (arrays[n]);
+		}
+
+		reference at(size_type n)
+		{
+			if (n >= v_size || n < 0 || v_size == 0)
+				throw(std::out_of_range("the element is out of range"));
+			else
+				return (arrays[n]);
+		}
+
+		const_reference at(size_type n) const
+		{
+			if (n >= v_size || n < 0 || v_size == 0)
+				throw(std::out_of_range("the element is out of range"));
+			else
+				return (arrays[n]);
+		}
+
+		reference front()
+		{
+			return (arrays[0]);
+		}
+
+		const_reference front() const
+		{
+			return (arrays[0]);
+		}
+
+		reference back()
+		{
+			return (arrays[v_size - 1]);
+		}
+
+		const_reference back() const
+		{
+			return (arrays[v_size - 1]);
 		}
 
 	private:
