@@ -63,6 +63,13 @@
         "unordered_map": "cpp",
         "memory_resource": "cpp",
         "__bits": "cpp",
-        "clocale": "cpp"
+        "clocale": "cpp",
+        "deque": "cpp",
+        "__tree": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "queue": "cpp",
+        "stack": "cpp"
     }
 }

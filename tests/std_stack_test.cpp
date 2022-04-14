@@ -1,19 +1,19 @@
 
 
-#include "./Stack.hpp"
-#include <iostream> // std::cout
-#include <vector>   // std::vector
-#include <deque>    // std::deque
+#include <iostream>
+#include <stack>
+#include <vector>
+#include <deque>
 
 int main()
 {
     std::deque<int> mydeque(3, 100);   // deque with 3 elements
     std::vector<int> myvector(2, 200); // vector with 2 elements
-    ft::stack<int> first;              // empty stack
-    ft::stack<int> second(mydeque);    // stack initialized to copy of deque
+    std::stack<int> first;             // empty stack
+    std::stack<int> second(mydeque);   // stack initialized to copy of deque
 
-    ft::stack<int, std::vector<int>> third; // empty stack using vector
-    ft::stack<int, std::vector<int>> fourth(myvector);
+    std::stack<int, std::vector<int>> third; // empty stack using vector
+    std::stack<int, std::vector<int>> fourth(myvector);
 
     std::cout << "size of first: " << first.size() << '\n';
     std::cout << "size of second: " << second.size() << '\n';
@@ -21,7 +21,7 @@ int main()
     std::cout << "size of fourth: " << fourth.size() << '\n';
 
     // EMPTY
-    ft::stack<int> empty_test;
+    std::stack<int> empty_test;
     int sum(0);
 
     for (int i = 1; i <= 10; i++)
@@ -36,7 +36,7 @@ int main()
     std::cout << "total: " << sum << '\n';
 
     // SIZE
-    ft::stack<int> size_test;
+    std::stack<int> size_test;
     std::cout << "0. size: " << size_test.size() << '\n';
 
     for (int i = 0; i < 5; i++)
@@ -47,7 +47,7 @@ int main()
     std::cout << "2. size: " << size_test.size() << '\n';
 
     // TOP
-    ft::stack<int> top_test;
+    std::stack<int> top_test;
 
     top_test.push(10);
     top_test.push(20);
@@ -57,7 +57,7 @@ int main()
     std::cout << "top_test.top() is now " << top_test.top() << '\n';
 
     // PUSH AND POP
-    ft::stack<int> push_pop;
+    std::stack<int> push_pop;
 
     for (int i = 0; i < 5; ++i)
         push_pop.push(i);

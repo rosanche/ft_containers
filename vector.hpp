@@ -2,7 +2,7 @@
 #define VECTOR_HPP
 
 #include <iostream>
-#include "RandomIterator.hpp"
+#include "reverse_iterator.hpp"
 #include "tools.hpp"
 #include <memory>
 #include <vector>
@@ -25,47 +25,53 @@ namespace ft
 
 		typedef pointer iterator;
 		typedef const_pointer const_iterator;
-		typedef ft::RandomIterator<iterator> reverse_iterator;
-		typedef ft::RandomIterator<const_iterator> const_reverse_iterator;
+		typedef ft::reverse_iterator<iterator> reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
 
 	private:
 		value_type *arrays;
 		allocator_type allocator;
-		int v_size;
-		int v_capacity;
+		size_type v_size;
+		size_type v_capacity;
 
 	public:
 		//  CONSTRUCTOR
 
-		explicit vector(const allocator_type &alloc = allocator_type()) : allocator(alloc),
-																		  arrays(NULL),
+		explicit vector(const allocator_type &alloc = allocator_type()) : arrays(NULL),
+																		  allocator(alloc),
 																		  v_size(0),
 																		  v_capacity(0)
 		{
 		}
 
-		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : allocator(alloc),
-																															 arrays(NULL),
-																															 v_size(0),
-																															 v_capacity(0)
+		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : arrays(NULL),
+																															 allocator(alloc),
+																															 v_size(n),
+																															 v_capacity(n)
 		{
+			arrays = allocator.allocate(v_size);
 			assign(n, val);
 		}
 
 		template <class InputIterator>
-		vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type()) : allocator(alloc),
-																										  arrays(NULL),
+		vector(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type()) : arrays(NULL),
+																										  allocator(alloc),
 																										  v_size(0),
 																										  v_capacity(0)
 		{
+			for (InputIterator it = first; it != last; ++it)
+				v_size++;
+			v_capacity = v_size;
+			arrays = allocator.allocate(v_size);
 			assign(first, last);
 		}
 
-		vector(const vector &ptr) : allocator(ptr.allocator),
-									arrays(NULL),
-									v_size(0),
-									v_capacity(0)
+		vector(const vector &ptr) : arrays(NULL),
+									allocator(ptr.allocator),
+									v_size(ptr.size()),
+									v_capacity(ptr.size())
 		{
+			arrays = allocator.allocate(v_size);
 			assign(ptr.begin(), ptr.end());
 		}
 
@@ -111,7 +117,12 @@ namespace ft
 
 		reverse_iterator rbegin()
 		{
-			return (reverse_iterator(arrays));
+			return (reverse_iterator(end()));
+		}
+
+		const_reverse_iterator rbegin() const
+		{
+			return (const_reverse_iterator(end()));
 		}
 
 		iterator end()
@@ -123,13 +134,18 @@ namespace ft
 			return (const_iterator(&arrays[v_size]));
 		}
 
+		const_reverse_iterator rend() const
+		{
+			return (const_reverse_iterator(begin()));
+		}
+
 		reverse_iterator rend()
 		{
-			return (reverse_iterator(&arrays[v_size]));
+			return (reverse_iterator(begin()));
 		}
 
 		// CAPACITY
-		int size()
+		size_type size() const
 		{
 			return (v_size);
 		}
@@ -149,18 +165,22 @@ namespace ft
 
 		void reserve(size_type n)
 		{
+
 			if (n > max_size())
 				throw(std::length_error("n greater than maximum size"));
 			if (n > v_capacity)
 			{
 				value_type *new_array;
-				new_array = allocator.allocate(n);
-				for (size_t i = 0; i < v_size; i++)
-					allocator.construct(&new_array[i], arrays[i]);
-				allocator.deallocate(arrays, v_capacity);
-				allocator.destroy(arrays);
-				arrays = new_array;
+				size_type old_capacity = v_capacity;
 				v_capacity = n;
+				new_array = allocator.allocate(v_capacity);
+				for (size_t i = 0; i < v_size; ++i)
+					allocator.construct(&new_array[i], arrays[i]);
+				for (iterator it = begin(); it != end(); ++it)
+					allocator.destroy(it);
+				allocator.deallocate(arrays, old_capacity);
+				arrays = new_array;
+				// v_capacity = n;
 			}
 		}
 
@@ -206,8 +226,18 @@ namespace ft
 
 		void push_back(const value_type &val)
 		{
-			if (v_size + 1 > v_capacity)
-				reserve(v_size + 1);
+			if (v_size == v_capacity)
+			{
+				size_type oldCapacity = v_capacity;
+				v_capacity = v_size == 0 ? 1 : v_capacity * 2;
+				value_type *newArray = allocator.allocate(v_capacity);
+				for (size_type i = 0; i < v_size; ++i)
+					allocator.construct(&newArray[i], arrays[i]);
+				for (iterator it = begin(); it != end(); ++it)
+					allocator.destroy(it);
+				allocator.deallocate(arrays, oldCapacity);
+				arrays = newArray;
+			}
 			allocator.construct(&arrays[v_size], val);
 			v_size++;
 		}
@@ -289,24 +319,22 @@ namespace ft
 			iterator it = position;
 
 			allocator.destroy(position);
-			for (pointer tmp = position; tmp != end(); tmp++)
+			for (iterator tmp = position; tmp != end() - 1; tmp++)
 			{
 				allocator.construct(tmp, *(tmp + 1));
+				if (tmp + 1 != end())
+					allocator.destroy(tmp + 1);
 			}
 			v_size--;
+
 			return (it);
 		}
 
 		iterator erase(iterator first, iterator last)
 		{
-			iterator it = first;
-			iterator tmp = first;
-			while (tmp != first)
-			{
-				erase(first);
-				tmp++;
-			}
-			return (it);
+			for (; first != last; --last)
+				first = erase(first);
+			return (last);
 		}
 
 		void swap(vector &x)
@@ -384,6 +412,59 @@ namespace ft
 			y = tmp;
 		}
 	};
+
+	// NON-MEMBERS FUNCTIONS
+
+	template <class T, class Alloc>
+	bool operator==(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		if (lhs.size() != rhs.size())
+			return (false);
+		for (size_t i = 0; i < lhs.size(); i++)
+			if (lhs[i] != rhs[i])
+				return (false);
+		return (true);
+	}
+
+	template <class T, class Alloc>
+	bool operator!=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return !(lhs == rhs);
+	}
+
+	// using the lexicographical comparaison wich returns true if vect1 is < to vect2
+	template <class T, class Alloc>
+	bool operator<(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return (ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end()));
+	}
+
+	// is v1 >= v2, then !v1 < v2
+	template <class T, class Alloc>
+	bool operator>=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return !(lhs < rhs);
+	}
+
+	// if v1 > v2, !v2 >= v1
+	template <class T, class Alloc>
+	bool operator>(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return !(rhs >= lhs);
+	}
+
+	// if v1 <= v2, then !v1 > v2
+	template <class T, class Alloc>
+	bool operator<=(const vector<T, Alloc> &lhs, const vector<T, Alloc> &rhs)
+	{
+		return !(lhs > rhs);
+	}
+
+	template <class T, class Alloc>
+	void swap(ft::vector<T, Alloc> &lhs, ft::vector<T, Alloc> &rhs)
+	{
+		lhs.swap(rhs);
+	}
 };
 
 #endif

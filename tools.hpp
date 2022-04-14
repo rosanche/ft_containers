@@ -14,7 +14,7 @@ namespace ft
 		operator T() { return v; }
 	};
 
-	// Instantiations
+	// INSTANTIATIONS
 	typedef integral_const<bool, true> t_type;
 	typedef integral_const<bool, false> f_type;
 
@@ -100,6 +100,33 @@ namespace ft
 	struct is_integral<unsigned long long int> : ft::t_type
 	{
 	};
+
+	// LESS
+	template <class T>
+	struct less
+	{
+		bool operator()(const T &lhs, const T &rhs) const
+		{
+			return (lhs < rhs);
+		}
+	};
+
+	// LEXICOGRAPHICAL_COMPARE
+	template <class InputIterator1, class InputIterator2>
+	bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1,
+								 InputIterator2 first2, InputIterator2 last2)
+	{
+		while (first1 != last1)
+		{
+			if (first2 == last2 || *first2 < *first1)
+				return false;
+			else if (*first1 < *first2)
+				return true;
+			++first1;
+			++first2;
+		}
+		return (first2 != last2);
+	}
 }
 
 #endif
