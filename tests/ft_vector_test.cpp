@@ -9,7 +9,7 @@ int main()
     ft::vector<int> tour(two);
 
     for (ft::vector<int>::iterator x = two.begin(); x != two.end(); ++x)
-        std::cout << "x value :" << x << std::endl;
+        std::cout << "x value :" << *x << std::endl;
 
     // SIZE AND CAPACITY
     ft::vector<int> test_size;
