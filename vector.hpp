@@ -46,11 +46,17 @@ namespace ft
 
 		explicit vector(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()) : arrays(NULL),
 																															 allocator(alloc),
-																															 v_size(n),
-																															 v_capacity(n)
+																															 v_size(0),
+																															 v_capacity(0)
 		{
-			arrays = allocator.allocate(v_size);
-			assign(n, val);
+			arrays = allocator.allocate(n);
+			v_capacity = n;
+			while (n)
+			{
+				allocator.construct(arrays + v_size, val);
+				v_size++;
+				n--;
+			}
 		}
 
 		template <class InputIterator>
@@ -79,10 +85,8 @@ namespace ft
 		{
 			if (arrays)
 			{
-				for (iterator i = begin(); i != end(); i++)
-					allocator.destroy(&(*i));
-
-				allocator.deallocate(arrays, v_size);
+				clear();
+				allocator.deallocate(arrays, v_capacity);
 			}
 		}
 
@@ -233,8 +237,8 @@ namespace ft
 				value_type *newArray = allocator.allocate(v_capacity);
 				for (size_type i = 0; i < v_size; ++i)
 					allocator.construct(&newArray[i], arrays[i]);
-				for (iterator it = begin(); it != end(); ++it)
-					allocator.destroy(it);
+				for (iterator it = begin(); it  != end(); ++it)
+					allocator.destroy(it); 
 				allocator.deallocate(arrays, oldCapacity);
 				arrays = newArray;
 			}
